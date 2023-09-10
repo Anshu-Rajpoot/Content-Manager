@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Creation Interface</title>
+    <style>
+        body {
+            font-family: 'Arial';
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #b9d3ff77;
+        }
+
+        #blog-container {
+            width: 80%;
+            max-width: 800px;
+            background-color: rgb(249, 249, 250);
+            border: 1px solid #3546ff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(134, 160, 238, 0.1);
+        }
+
+        .toolbox {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .toolbox button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #0078d4;
+            color: rgb(240, 241, 246);
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toolbox button:hover {
+            background-color: #005ea2;
+        }
+
+        #dropzone {
+            border: 2px dashed rgb(129, 130, 236);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        #blog-content {
+            border: 1px solid #c7c7f3;
+            padding: 10px;
+            background-color: #fff;
+            min-height: 200px;
+        }
+        h2{
+            text-align:center;
+        }
+        footer{
+            text-align:left;
+            font-family:'Courier New';
+        }
+    </style>
+</head>
+
+<body>
+    <div id="blog-container">
+        <h2>Content Manager</h2>
+        <div class="toolbox">
+            <button id="addText">Add Text</button>
+            <button id="addImage">Add Image</button>
+            <button id="addVideo">Add Video</button>
+        </div>
+        <div id="dropzone">
+            <p><i>Drag and drop</i> an <b>Image</b>, <b>Video</b>, or <b>Text</b> here</p>
+        </div>
+        <div id="blog-content" contenteditable="true"></div>
+    </div>
+
+    <script>
+        const blogContent = document.getElementById("blog-content");
+        const dropzone = document.getElementById("dropzone");
+        dropzone.addEventListener("dragover", (e) => e.preventDefault());
+        dropzone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                if (file.type.startsWith("image")) {
+                    const imageElement = document.createElement("img");
+                    imageElement.src = URL.createObjectURL(file);
+                    blogContent.appendChild(imageElement);
+                } else if (file.type.startsWith("video")) {
+                    const videoElement = document.createElement("video");
+                    videoElement.controls = true;
+                    videoElement.innerHTML = '<source src="' + URL.createObjectURL(file) + '" type="' + file.type + '">';
+                    blogContent.appendChild(videoElement);
+                } else if (file.type.startsWith("text")) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const textElement = document.createElement("p");
+                        textElement.textContent = event.target.result;
+                        blogContent.appendChild(textElement);
+                    };
+                    reader.readAsText(file);
+                }
+            }
+        });
+
+        function addText() {
+            const textElement = document.createElement("p");
+            textElement.textContent = "This is a Default text element";
+            blogContent.appendChild(textElement);
+        }
+        document.getElementById("addText").addEventListener("click", addText);
+
+        function addMedia(type) {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = `${type}/*`;
+            input.style.display = "none";
+            input.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.type.startsWith("image")) {
+                        const imageElement = document.createElement("img");
+                        imageElement.src = URL.createObjectURL(file);
+                        blogContent.appendChild(imageElement);
+                    } else if (file.type.startsWith("video")) {
+                        const videoElement = document.createElement("video");
+                        videoElement.controls = true;
+                        videoElement.inne rHTML = '<source src="' + URL.createObjectURL(file) + '" type="' + file.type + '">';
+                        blogContent.appendChild(videoElement);
+                    }
+                }
+            });
+            input.click();
+        }
+        document.getElementById("addImage").addEventListener("click", () => addMedia("image"));
+        document.getElementById("addVideo").addEventListener("click", () => addMedia("video"));
+    </script>
+</body>
+<footer >&amp; Copyrights Reserved 2023</footer>
+</html>
